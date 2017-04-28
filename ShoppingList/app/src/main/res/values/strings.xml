@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">ShoppingList</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string-array name="types_array">
+        <item>Food</item>
+        <item>Electronic</item>
+        <item>Art</item>
+        <item>Clothes</item>
+        <item>Drinks</item>
+        <item>Travel</item>
+        <item>Other</item>
+    </string-array>
+    <string name="type_spinner">Select Item Type</string>
+    <string name="empty_field_error">Can not be empty</string>
+    <string name="type_spinner_empty">Please select an item type.</string>
+    <string name="food_type">Food</string>
+    <string name="drinks_type">Drinks</string>
+    <string name="clothes_type">Clothes</string>
+    <string name="travel_type">Travel</string>
+    <string name="electronic_type">Electronic</string>
+    <string name="art_type">Art</string>
+    <string name="other_type">Other</string>
+    <string name="new_item">New Shopping Item</string>
+    <string name="add_new">Add New Item</string>
+    <string name="cancel">Cancel</string>
+    <string name="expected_total">Total expected cost is $</string>
+    <string name="fill_out_fields">Please, fill out all fields.</string>
+    <string name="cancelled">Cancelled</string>
+</resources>
