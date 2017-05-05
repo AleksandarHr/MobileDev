@@ -121,13 +121,14 @@ public class MainActivity extends AppCompatActivity {
         boolean isValid = false;
         if ("".equals(etName.getText().toString())) {
             etName.setError(getString(R.string.empty_field_error));
-        } else if ("".equals(etDescription.getText().toString())) {
+        }
+        else if ("".equals(etDescription.getText().toString())) {
             etDescription.setError(getString(R.string.empty_field_error));
-        } else if ("".equals(etPrice.getText().toString())) {
+        }
+        else if ("".equals(etPrice.getText().toString())) {
             etPrice.setError(getString(R.string.empty_field_error));
-        } else if (typeSpinner.getSelectedItem() == null) {
-            Toast.makeText(this, R.string.type_spinner_empty, Toast.LENGTH_LONG).show();
-        } else {
+        }
+        else {
             isValid = true;
         }
 
@@ -201,11 +202,19 @@ public class MainActivity extends AppCompatActivity {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String spinnerContent;
+                if (typeSpinner.getSelectedItemPosition() >  typeSpinner.getCount()) {
+                    spinnerContent = getString(R.string.other_type);
+                }
+                else {
+                    spinnerContent = typeSpinner.getSelectedItem().toString();
+                }
+
                 if (checkEmptyField(etItemName, etItemDescription, etItemPrice, typeSpinner)) {
                     shoppingRecyclerAdapter.addItem(
                             etItemName.getText().toString(),
                             Double.parseDouble(etItemPrice.getText().toString()),
-                            typeSpinner.getSelectedItem().toString(),
+                            spinnerContent,
                             etItemDescription.getText().toString());
                     expenses += Double.parseDouble(etItemPrice.getText().toString());
                     tvExpenses.setText(getString(R.string.expected_total) + expenses);
