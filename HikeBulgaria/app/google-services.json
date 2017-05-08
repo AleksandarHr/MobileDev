@@ -1,0 +1,45 @@
+{
+  "project_info": {
+    "project_number": "525523649701",
+    "firebase_url": "https://hikebulgaria-5c0c9.firebaseio.com",
+    "project_id": "hikebulgaria-5c0c9",
+    "storage_bucket": "hikebulgaria-5c0c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525523649701:android:cc7c2eed5fd3f98b",
+        "android_client_info": {
+          "package_name": "com.example.alexander.hikebulgaria"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525523649701-eugqadb3062olltb4736o0oevobd8dvu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD95ZAIQ2ayZNrOkh6vJCVFsf_m7i8yHi8"
+        },
+        {
+          "current_key": "AIzaSyANVhdHLhkr_uWcaE9GNsOCwxdYH0uZWSc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
