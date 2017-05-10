@@ -69,7 +69,7 @@ public class CityRecyclerAdapter  extends RecyclerView.Adapter<CityRecyclerAdapt
             @Override
             public void onClick(View v) {
                 ((MainActivity) context).openDetailsActivityt(holder.getAdapterPosition(),
-                        citiesList.get(holder.getAdapterPosition()).getCityID());
+                        citiesList.get(holder.getAdapterPosition()).getId());
             }
         });
     }

@@ -24,7 +24,11 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import com.example.alexander.weatherreport.adapter.CityRecyclerAdapter;
+import com.example.alexander.weatherreport.network.WeatherAPI;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity
 
     private int positionOfCity = -1;
 
-    private String baseURL = "api.openweathermap.org";
+    private String baseURL = "http://api.openweathermap.org/data/2.5";
 
 
     @Override
@@ -70,6 +74,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        final WeatherAPI weatherAPI = retrofit.create(WeatherAPI.class);
 
 
         setUpUI();

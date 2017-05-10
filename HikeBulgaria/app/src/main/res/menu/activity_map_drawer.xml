@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_elevation"
+            android:icon="@drawable/elevation"
+            android:title="Elevation" />
+        <item
+            android:id="@+id/nav_distance"
+            android:icon="@drawable/distance"
+            android:title="Distance" />
+        <item
+            android:id="@+id/nav_calories"
+            android:icon="@drawable/calories"
+            android:title="Calories" />
+        <item
+            android:id="@+id/nav_weather"
+            android:icon="@drawable/weather"
+            android:title="Weather" />
+        <item
+            android:id="@+id/nav_transport"
+            android:icon="@drawable/transportation"
+            android:title="Transport" />
+        <item
+            android:id="@+id/nav_music"
+            android:icon="@drawable/muisc"
+            android:title="Music Player" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/logout"
+            android:title="Logout" />
+    </group>
+
+</menu>

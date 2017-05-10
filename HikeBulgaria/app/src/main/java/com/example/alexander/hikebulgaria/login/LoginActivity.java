@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.alexander.hikebulgaria.MainActivity;
 import com.example.alexander.hikebulgaria.R;
+import com.example.alexander.hikebulgaria.map.MapsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -83,6 +84,8 @@ public class LoginActivity extends BaseActivity {
 
                     Toast.makeText(LoginActivity.this, "REG OK",
                             Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+
                 } else {
                     Toast.makeText(LoginActivity.this, "Failed: "+
                                     task.getException().getLocalizedMessage(),
@@ -122,7 +125,7 @@ public class LoginActivity extends BaseActivity {
                 if (task.isSuccessful()) {
                     Toast.makeText(LoginActivity.this, "Login ok", Toast.LENGTH_SHORT).show();
 
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, MapsActivity.class));
                 } else {
                     Toast.makeText(LoginActivity.this, "Failed: "+task.getException().getLocalizedMessage(),
                             Toast.LENGTH_SHORT).show();
