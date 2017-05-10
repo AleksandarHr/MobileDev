@@ -5,10 +5,9 @@ import android.app.Application;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
-
 public class MainApplication extends Application {
 
-    private Realm realmCity;
+    private Realm realmWeather;
 
     @Override
     public void onCreate() {
@@ -22,14 +21,14 @@ public class MainApplication extends Application {
                 .Builder()
                 .deleteRealmIfMigrationNeeded()
                 .build();
-        realmCity = Realm.getInstance(config);
+        realmWeather = Realm.getInstance(config);
     }
 
     public void closeRealm() {
-        realmCity.close();
+        realmWeather.close();
     }
 
-    public Realm getRealmTodo() {
-        return realmCity;
+    public Realm getRealmWeather() {
+        return realmWeather;
     }
 }

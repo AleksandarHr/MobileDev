@@ -3,6 +3,8 @@ package com.example.alexander.weatherreport.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+
 public class City {
 
     @SerializedName("id")

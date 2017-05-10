@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,17 +17,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import com.example.alexander.weatherreport.adapter.CityRecyclerAdapter;
+import com.example.alexander.weatherreport.data.WeatherResult;
 import com.example.alexander.weatherreport.network.WeatherAPI;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -45,9 +48,6 @@ public class MainActivity extends AppCompatActivity
 
     private int positionOfCity = -1;
 
-    private String baseURL = "http://api.openweathermap.org/data/2.5";
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +61,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                showAddCityDialog();
             }
         });
 
@@ -75,22 +74,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        final WeatherAPI weatherAPI = retrofit.create(WeatherAPI.class);
-
+        ((MainApplication) getApplication()).openRealm();
 
         setUpUI();
     }
 
 
     private void setUpUI() {
-        //setUpToolBar();
-        setUpAddTodoUI();
         setupRecyclerView();
     }
 
@@ -102,55 +92,31 @@ public class MainActivity extends AppCompatActivity
         recyclerCity.setLayoutManager(layoutManager);
 
         cityRecyclerAdapter = new CityRecyclerAdapter(this,
-                ((MainApplication)getApplication()).getRealmTodo());
+                ((MainApplication) getApplication()).getRealmWeather());
         recyclerCity.setAdapter(cityRecyclerAdapter);
-
-        /* adding touch support
-        ItemTouchHelper.Callback callback = new TodoItemTouchHelperCallback(todoRecyclerAdapter);
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(recyclerCity);
-    */
     }
 
-    public void openDetailsActivityt(int index, String todoID) {
+    public void openDetailsActivity(int index, String cityID) {
         positionOfCity = index;
 
-        Intent intent = new Intent(this, DetailsActivity.class);
-        startActivity(intent);
+        Intent startEdit = new Intent(this, DetailsActivity.class);
+
+        startEdit.putExtra(KEY_TODO_ID, cityID);
+
+        startActivityForResult(startEdit, REQUEST_CODE_EDIT);
     }
 
-    private void setUpAddTodoUI() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-
-                showAddTodoDialog();
-            }
-        });
-    }
-
-    /*
-    private void setUpToolBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
-*/
-
-    public void showAddTodoDialog() {
+    public void showAddCityDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add New City");
 
-        final EditText etTodoText = new EditText(this);
-        builder.setView(etTodoText);
+        final EditText etCityText = new EditText(this);
+        builder.setView(etCityText);
 
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                cityRecyclerAdapter.addCity(etTodoText.getText().toString());
-
+                cityRecyclerAdapter.addCity(etCityText.getText().toString());
                 recyclerCity.scrollToPosition(0);
             }
         });
@@ -161,10 +127,8 @@ public class MainActivity extends AppCompatActivity
                 dialog.dismiss();
             }
         });
-
         builder.show();
     }
-
 
     @Override
     public void onBackPressed() {
@@ -205,7 +169,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_add_city) {
-            // Handle the camera action
+            showAddCityDialog();
         } else if (id == R.id.nav_about) {
 
         }
@@ -214,4 +178,11 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((MainApplication) getApplication()).closeRealm();
+    }
+
 }
