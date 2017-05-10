@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -171,7 +172,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_add_city) {
             showAddCityDialog();
         } else if (id == R.id.nav_about) {
-
+            Toast.makeText(this, "Copyright @ Aleksandar Hrusanov", Toast.LENGTH_LONG);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

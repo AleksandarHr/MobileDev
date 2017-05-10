@@ -39,21 +39,15 @@ public class DetailsActivity extends AppCompatActivity {
         final TextView tvMinTemp = (TextView) findViewById(R.id.lowestTemp);
         final TextView tvMaxTemp = (TextView) findViewById(R.id.highestTemp);
 
-        Button btnGet = (Button) findViewById(R.id.btnGet);
-        btnGet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 Call<WeatherResult> callBuda = weatherAPI.getWeatherFor("budapest, hu", "metric", apiKey);
                 callBuda.enqueue(new Callback<WeatherResult>() {
                     @Override
                     public void onResponse(Call<WeatherResult> call, Response<WeatherResult> response) {
 
-                        tvName.setText(response.body().getCity().getName() + "\n" +
-                                        response.body().getList().get(0).getMain().getTemp() +
-                                        "\n" +
-                                        response.body().getList().get(0).getMain().getTempMin() +
-                                        "\n" +
-                                        response.body().getList().get(0).getMain().getTempMax());
+                        tvName.setText(response.body().getCity().getName());
+                        tvCurTemp.setText(response.body().getList().get(0).getMain().getTemp().toString());
+                        tvMinTemp.setText(response.body().getList().get(0).getMain().getTempMin().toString());
+                        tvMaxTemp.setText(response.body().getList().get(0).getMain().getTempMax().toString());
                     }
 
                     @Override
@@ -61,8 +55,5 @@ public class DetailsActivity extends AppCompatActivity {
                         tvName.setText(t.getLocalizedMessage());
                     }
                 });
-
-            }
-        });
     }
 }

@@ -11,8 +11,10 @@ import android.widget.TextView;
 import com.example.alexander.weatherreport.MainActivity;
 import com.example.alexander.weatherreport.R;
 import com.example.alexander.weatherreport.data.CityData;
+import com.example.alexander.weatherreport.touch.CityTouchHelperAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +23,8 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 
-public class CityRecyclerAdapter extends RecyclerView.Adapter<CityRecyclerAdapter.ViewHolder> {
+public class CityRecyclerAdapter extends RecyclerView.Adapter<CityRecyclerAdapter.ViewHolder>
+        implements CityTouchHelperAdapter {
 
     private List<CityData> citiesList;
     private Context context;
@@ -38,7 +41,7 @@ public class CityRecyclerAdapter extends RecyclerView.Adapter<CityRecyclerAdapte
                 realmTodo.where(CityData.class)
                         .findAll()
                         .sort("cityName",
-                        Sort.ASCENDING);
+                                Sort.ASCENDING);
 
         citiesList = new ArrayList<CityData>();
 
@@ -80,7 +83,7 @@ public class CityRecyclerAdapter extends RecyclerView.Adapter<CityRecyclerAdapte
         newCity.setCityName(cityName);
 
         realmTodo.commitTransaction();
-        ((MainActivity)context).openDetailsActivity(0, newCity.getCityID());
+        ((MainActivity) context).openDetailsActivity(0, newCity.getCityID());
 
         citiesList.add(0, newCity);
         notifyItemInserted(0);
@@ -97,23 +100,17 @@ public class CityRecyclerAdapter extends RecyclerView.Adapter<CityRecyclerAdapte
         }
     }
 
-    /*
+
     @Override
     public void onItemDismiss(int position) {
         realmTodo.beginTransaction();
         citiesList.get(position).deleteFromRealm();
         realmTodo.commitTransaction();
 
-
         citiesList.remove(position);
-
-        // refreshes the whole list
-        //notifyDataSetChanged();
-        // refreshes just the relevant part that has been deleted
         notifyItemRemoved(position);
     }
 
-    /*
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
@@ -127,11 +124,7 @@ public class CityRecyclerAdapter extends RecyclerView.Adapter<CityRecyclerAdapte
             }
         }
 
-
         notifyItemMoved(fromPosition, toPosition);
     }
-*/
-
-
-
 }
+
