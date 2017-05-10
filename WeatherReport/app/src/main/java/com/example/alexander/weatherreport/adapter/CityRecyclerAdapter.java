@@ -66,7 +66,8 @@ public class CityRecyclerAdapter extends RecyclerView.Adapter<CityRecyclerAdapte
             @Override
             public void onClick(View v) {
                 ((MainActivity) context).openDetailsActivity(holder.getAdapterPosition(),
-                        citiesList.get(holder.getAdapterPosition()).getCityID()
+                        citiesList.get(holder.getAdapterPosition()).getCityID(),
+                        citiesList.get(holder.getAdapterPosition()).getCityName().toString()
                 );
             }
         });
@@ -83,7 +84,7 @@ public class CityRecyclerAdapter extends RecyclerView.Adapter<CityRecyclerAdapte
         newCity.setCityName(cityName);
 
         realmTodo.commitTransaction();
-        ((MainActivity) context).openDetailsActivity(0, newCity.getCityID());
+        ((MainActivity) context).openDetailsActivity(0, newCity.getCityID(), cityName);
 
         citiesList.add(0, newCity);
         notifyItemInserted(0);

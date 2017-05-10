@@ -97,12 +97,12 @@ public class MainActivity extends AppCompatActivity
         recyclerCity.setAdapter(cityRecyclerAdapter);
     }
 
-    public void openDetailsActivity(int index, String cityID) {
+    public void openDetailsActivity(int index, String cityID, String cityName) {
         positionOfCity = index;
 
         Intent startEdit = new Intent(this, DetailsActivity.class);
 
-        startEdit.putExtra(KEY_TODO_ID, cityID);
+        startEdit.putExtra("name", cityName);
 
         startActivityForResult(startEdit, REQUEST_CODE_EDIT);
     }

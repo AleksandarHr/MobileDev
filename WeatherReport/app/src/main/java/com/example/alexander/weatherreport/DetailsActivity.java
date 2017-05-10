@@ -1,5 +1,6 @@
 package com.example.alexander.weatherreport;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private final String apiKey = "3ab890e368d480238f59d88cbad17e9c";
     private final String baseURL = "http://api.openweathermap.org/data/2.5/";
+    private String nameOfCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,15 @@ public class DetailsActivity extends AppCompatActivity {
         final TextView tvMinTemp = (TextView) findViewById(R.id.lowestTemp);
         final TextView tvMaxTemp = (TextView) findViewById(R.id.highestTemp);
 
-                Call<WeatherResult> callBuda = weatherAPI.getWeatherFor("budapest, hu", "metric", apiKey);
+        Intent intent = getIntent();
+        Bundle bd = intent.getExtras();
+        if(bd != null)
+        {
+            nameOfCity = (String) bd.get("name");
+            tvName.setText(nameOfCity);
+        }
+
+                Call<WeatherResult> callBuda = weatherAPI.getWeatherFor(nameOfCity, "metric", apiKey);
                 callBuda.enqueue(new Callback<WeatherResult>() {
                     @Override
                     public void onResponse(Call<WeatherResult> call, Response<WeatherResult> response) {
@@ -56,4 +66,5 @@ public class DetailsActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }
