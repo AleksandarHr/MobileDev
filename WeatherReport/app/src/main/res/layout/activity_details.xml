@@ -14,29 +14,39 @@
         android:layout_height="wrap_content"
         android:textSize="50sp" />
 
+    <ImageView
+        android:id="@+id/weatherLogo"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/cityName"/>
+
     <TextView
         android:id="@+id/currTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/cityName"
-        android:textSize="40sp"/>
+        android:layout_below="@+id/weatherLogo"
+        android:text="Current: "
+        android:textSize="30sp"/>
 
     <TextView
         android:id="@+id/lowestTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/currTemp"
-        android:layout_marginLeft="60dp"
-        android:textSize="30sp"/>
+        android:layout_marginLeft="10dp"
+        android:text="Low: "
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/highestTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:layout_below="@id/currTemp"
-        android:layout_marginRight="60dp"/>
+        android:text="High: "
+        android:layout_marginRight="10dp"/>
 
 </RelativeLayout>

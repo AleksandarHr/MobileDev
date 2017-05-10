@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_add_city) {
             showAddCityDialog();
         } else if (id == R.id.nav_about) {
-            Toast.makeText(this, "Copyright @ Aleksandar Hrusanov", Toast.LENGTH_LONG);
+            Toast.makeText(this, "Copyright @ Aleksandar Hrusanov", Toast.LENGTH_LONG).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
