@@ -23,9 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    private final String apiKey = getString(R.string.apiKey);
-    private final String baseURL = getString(R.string.baseURL);
-    private final String baseIcon = getString(R.string.baseIconURL);
+
     private String nameOfCity;
     private Context context;
 
@@ -34,6 +32,9 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        final String apiKey = getString(R.string.apiKey);
+        final String baseURL = getString(R.string.baseURL);
+        final String baseIcon = getString(R.string.baseIconURL);
         context = this;
 
         Retrofit retrofit = new Retrofit.Builder()
