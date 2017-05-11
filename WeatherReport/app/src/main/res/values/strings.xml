@@ -5,4 +5,13 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="apiKey">3ab890e368d480238f59d88cbad17e9c</string>
+    <string name="baseURL">http://api.openweathermap.org/data/2.5/</string>
+    <string name="baseIconURL">http://openweathermap.org/img/w/</string>
+    <string name="cityName">name</string>
+    <string name="metric">metric</string>
+    <string name="add_new_city">Add New City</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="about_app">Copyright @ Aleksandar Hrusanov</string>
 </resources>

@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -31,14 +32,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import com.example.alexander.weatherreport.adapter.CityRecyclerAdapter;
 import com.example.alexander.weatherreport.data.WeatherResult;
 import com.example.alexander.weatherreport.network.WeatherAPI;
+import com.example.alexander.weatherreport.touch.CityTouchHelperCallback;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+    //@BindView(R.id.fab)
+    //FloatingActionButton fab;
     @BindView(R.id.recyclerCity)
     RecyclerView recyclerCity;
 
@@ -57,14 +59,6 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAddCityDialog();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -95,6 +89,10 @@ public class MainActivity extends AppCompatActivity
         cityRecyclerAdapter = new CityRecyclerAdapter(this,
                 ((MainApplication) getApplication()).getRealmWeather());
         recyclerCity.setAdapter(cityRecyclerAdapter);
+
+        ItemTouchHelper.Callback callback = new CityTouchHelperCallback(cityRecyclerAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerCity);
     }
 
     public void openDetailsActivity(int index, String cityID, String cityName) {
@@ -102,19 +100,19 @@ public class MainActivity extends AppCompatActivity
 
         Intent startEdit = new Intent(this, DetailsActivity.class);
 
-        startEdit.putExtra("name", cityName);
+        startEdit.putExtra(getString(R.string.cityName), cityName);
 
         startActivityForResult(startEdit, REQUEST_CODE_EDIT);
     }
 
     public void showAddCityDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add New City");
+        builder.setTitle(R.string.add_new_city);
 
         final EditText etCityText = new EditText(this);
         builder.setView(etCityText);
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 cityRecyclerAdapter.addCity(etCityText.getText().toString());
@@ -122,7 +120,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -172,7 +170,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_add_city) {
             showAddCityDialog();
         } else if (id == R.id.nav_about) {
-            Toast.makeText(this, "Copyright @ Aleksandar Hrusanov", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.about_app, Toast.LENGTH_LONG).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

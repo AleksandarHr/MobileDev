@@ -23,9 +23,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    private final String apiKey = "3ab890e368d480238f59d88cbad17e9c";
-    private final String baseURL = "http://api.openweathermap.org/data/2.5/";
-    private final String baseIcon = "http://openweathermap.org/img/w/";
+    private final String apiKey = getString(R.string.apiKey);
+    private final String baseURL = getString(R.string.baseURL);
+    private final String baseIcon = getString(R.string.baseIconURL);
     private String nameOfCity;
     private Context context;
 
@@ -52,11 +52,14 @@ public class DetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bd = intent.getExtras();
         if (bd != null) {
-            nameOfCity = (String) bd.get("name");
+            nameOfCity = (String) bd.get(getString(R.string.cityName));
         }
 
 
-        Call<WeatherResult> callBuda = weatherAPI.getWeatherFor(nameOfCity, "metric", apiKey);
+        Call<WeatherResult> callBuda = weatherAPI.getWeatherFor(nameOfCity,
+                getString(R.string.metric),
+                apiKey);
+
         callBuda.enqueue(new Callback<WeatherResult>() {
             @Override
             public void onResponse(Call<WeatherResult> call, Response<WeatherResult> response) {
