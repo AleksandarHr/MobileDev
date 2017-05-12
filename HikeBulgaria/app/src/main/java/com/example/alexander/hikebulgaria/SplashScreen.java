@@ -1,28 +1,22 @@
 package com.example.alexander.hikebulgaria;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
-import android.content.Intent;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.alexander.hikebulgaria.login.LoginActivity;
 
 public class SplashScreen extends AppCompatActivity {
 
-    public Animation animation;
-    public ImageView imgView;
+    private Animation animation;
+    private ImageView imgView;
+    private TextView tvTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +25,14 @@ public class SplashScreen extends AppCompatActivity {
 
         animation = AnimationUtils.loadAnimation(SplashScreen.this,
                 R.anim.splash_anim);
+
         imgView = (ImageView) findViewById(R.id.imgView);
+        tvTitle = (TextView) findViewById(R.id.tvTitle);
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),
+                "fonts/beyond_the_mountains.ttf");
+
+        tvTitle.setTypeface(custom_font);
 
         playAnim();
 
@@ -58,6 +59,7 @@ public class SplashScreen extends AppCompatActivity {
             }
         }, 1000);
     }
+
     // Destroy the splashscreen so user cannot go back to it
     @Override
     protected void onPause() {

@@ -1,6 +1,7 @@
 package com.example.alexander.hikebulgaria.map;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.provider.MediaStore;
@@ -10,8 +11,14 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.alexander.hikebulgaria.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+
     private GoogleMap mMap;
 
     @Override
@@ -55,11 +63,60 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        setUpMap(mMap);
+    }
 
-        // Add a marker in Sydney and move the camera
+    public void setUpMap (GoogleMap googleMap) {
         LatLng burgas = new LatLng(42.5048, 27.4626);
-        mMap.addMarker(new MarkerOptions().position(burgas).title("Marker in Burgas"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(burgas));
+        googleMap.addMarker(new MarkerOptions().position(burgas).title("Marker in Burgas"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(burgas));
+
+        googleMap.getUiSettings().setCompassEnabled(true);
+        googleMap.getUiSettings().setAllGesturesEnabled(true);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
+    }
+
+    public void setUpViewToggle(ToggleButton toggle, final GoogleMap gm) {
+        if (gm.getMapType() == GoogleMap.MAP_TYPE_SATELLITE) {toggle.setChecked(true);}
+        else if (gm.getMapType() == GoogleMap.MAP_TYPE_NORMAL) {toggle.setChecked(false);}
+
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    gm.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                } else {
+                    gm.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                }
+            }
+        });
+    }
+
+    public void showSettingsDialog(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Settings");
+
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.settings, null);
+        builder.setView(dialogView);
+        ToggleButton toggle = (ToggleButton) dialogView.findViewById(R.id.toggleView);
+        setUpViewToggle(toggle, mMap);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     @Override
@@ -82,6 +139,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Intent.CATEGORY_APP_MUSIC);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Min SDK 15
             startActivity(intent);
+        }
+        else if (id == R.id.nav_offline_maps) {
+
+        }
+        else if (id == R.id.nav_settings) {
+            showSettingsDialog();
         }
         else if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
