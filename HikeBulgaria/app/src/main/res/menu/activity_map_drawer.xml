@@ -3,9 +3,9 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_elevation"
+            android:id="@+id/nav_altitude"
             android:icon="@drawable/elevation"
-            android:title="Elevation" />
+            android:title="Altitude" />
         <item
             android:id="@+id/nav_distance"
             android:icon="@drawable/distance"

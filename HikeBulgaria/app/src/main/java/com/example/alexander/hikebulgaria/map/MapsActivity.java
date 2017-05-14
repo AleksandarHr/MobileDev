@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,9 +21,12 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.alexander.hikebulgaria.MainActivity;
 import com.example.alexander.hikebulgaria.R;
+import com.example.alexander.hikebulgaria.TrackGPS;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,9 +35,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+import java.util.List;
+
+import static android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1;
+
+public class MapsActivity extends FragmentActivity
+        implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+    // GooglePlayServicesClient.ConnectionCallbacks
+    // GooglePlayServicesClient.OnConnectionFailedListener
 
     private GoogleMap mMap;
+    private TrackGPS tracker;
+    double latitude, longitude, altitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +60,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
+
+        getLocationInfo();
 
         TextView tvEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.textView);
         tvEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
@@ -66,10 +83,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setUpMap(mMap);
     }
 
-    public void setUpMap (GoogleMap googleMap) {
-        LatLng burgas = new LatLng(42.5048, 27.4626);
-        googleMap.addMarker(new MarkerOptions().position(burgas).title("Marker in Burgas"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(burgas));
+    public void setUpMap(GoogleMap googleMap) {
+        LatLng currLocation = new LatLng(latitude, longitude);
+        googleMap.addMarker(new MarkerOptions().position(currLocation).title("Marker in CurrLocation"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(currLocation));
 
         googleMap.getUiSettings().setCompassEnabled(true);
         googleMap.getUiSettings().setAllGesturesEnabled(true);
@@ -79,8 +96,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void setUpViewToggle(ToggleButton toggle, final GoogleMap gm) {
-        if (gm.getMapType() == GoogleMap.MAP_TYPE_SATELLITE) {toggle.setChecked(true);}
-        else if (gm.getMapType() == GoogleMap.MAP_TYPE_NORMAL) {toggle.setChecked(false);}
+        if (gm.getMapType() == GoogleMap.MAP_TYPE_SATELLITE) {
+            toggle.setChecked(true);
+        } else if (gm.getMapType() == GoogleMap.MAP_TYPE_NORMAL) {
+            toggle.setChecked(false);
+        }
 
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -93,7 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    public void showSettingsDialog(){
+    public void showSettingsDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Settings");
 
@@ -119,34 +139,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         builder.show();
     }
 
+    private void getLocationInfo() {
+        tracker = new TrackGPS(MapsActivity.this);
+
+        if (tracker.canGetLocation()) {
+            longitude = tracker.getLongitude();
+            latitude = tracker.getLatitude();
+            altitude = tracker.getAltitude();
+        }
+        else {
+            tracker.showSettingsAlert();
+        }
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_elevation) {
-        }
-        else if (id == R.id.nav_distance) {
-        }
-        else if (id == R.id.nav_weather) {
-        }
-        else if (id == R.id.nav_transport) {
-        }
-        else if (id == R.id.nav_calories) {
-        }
-        else if (id == R.id.nav_music) {
-            Intent intent=Intent.makeMainSelectorActivity(Intent.ACTION_MAIN,
-                    Intent.CATEGORY_APP_MUSIC);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Min SDK 15
-            startActivity(intent);
-        }
-        else if (id == R.id.nav_offline_maps) {
+        if (id == R.id.nav_altitude) {
+            Toast.makeText(this, "Current Longitude: " + longitude + "\n" +
+                    "Current Latitude: " + latitude + "\n" +
+                    "Current Altitude: " + altitude, Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_distance) {
+        } else if (id == R.id.nav_weather) {
+        } else if (id == R.id.nav_transport) {
+        } else if (id == R.id.nav_calories) {
+        } else if (id == R.id.nav_music) {
+            if (Build.VERSION.SDK_INT >= ICE_CREAM_SANDWICH_MR1) {
+                Intent intent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN,
+                        Intent.CATEGORY_APP_MUSIC);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Min SDK 15
+                startActivity(intent);
+            }
+        } else if (id == R.id.nav_offline_maps) {
 
-        }
-        else if (id == R.id.nav_settings) {
+        } else if (id == R.id.nav_settings) {
             showSettingsDialog();
-        }
-        else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
             finish();
         }
@@ -154,5 +184,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tracker.stopUsingGPS();
     }
 }

@@ -9,15 +9,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Map View: "
-        android:textSize="37sp"/>
+        android:textSize="27sp"/>
 
     <ToggleButton
         android:id="@+id/toggleView"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/tvView"
         android:textOn="Satellite"
         android:textOff="Normal"/>
-
 
 </RelativeLayout>
