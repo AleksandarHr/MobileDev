@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -35,6 +37,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import static android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1;
@@ -152,6 +159,12 @@ public class MapsActivity extends FragmentActivity
         }
     }
 
+    private void openWebsite(String urlAddr) {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(this, Uri.parse(urlAddr));
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
@@ -163,7 +176,9 @@ public class MapsActivity extends FragmentActivity
                     "Current Altitude: " + altitude, Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_distance) {
         } else if (id == R.id.nav_weather) {
+            openWebsite("https://www.sinoptik.bg/");
         } else if (id == R.id.nav_transport) {
+            openWebsite("http://razpisanie.bdz.bg/site/search.jsp");
         } else if (id == R.id.nav_calories) {
         } else if (id == R.id.nav_music) {
             if (Build.VERSION.SDK_INT >= ICE_CREAM_SANDWICH_MR1) {

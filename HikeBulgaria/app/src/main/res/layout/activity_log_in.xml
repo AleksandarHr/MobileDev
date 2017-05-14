@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="8dp"
             android:padding="12dp"
             android:text="Login"/>
 
@@ -60,8 +60,16 @@
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:padding="12dp"
             android:text="Register"/>
+
+        <Button
+            android:id="@+id/btnOffline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:text="Offline Mode"/>
 
     </LinearLayout>
 </ScrollView>
