@@ -1,5 +1,6 @@
 package com.example.alexander.hikebulgaria.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.alexander.hikebulgaria.MainActivity;
 import com.example.alexander.hikebulgaria.R;
+import com.example.alexander.hikebulgaria.SplashScreen;
 import com.example.alexander.hikebulgaria.map.MapsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,9 +46,7 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.etPassword)
     EditText etPassword;
 
-
     private FirebaseAuth firebaseAuth;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +101,11 @@ public class LoginActivity extends BaseActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @OnClick(R.id.btnOffline)
+    public void offlineClick() {
+
     }
 
     @OnClick(R.id.btnLogin)

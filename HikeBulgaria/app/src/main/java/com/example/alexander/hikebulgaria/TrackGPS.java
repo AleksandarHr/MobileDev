@@ -16,16 +16,13 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-// acquired from http://clover.studio/2016/08/09/getting-current-location-in-android-using-location-manager/
+// help from http://clover.studio/2016/08/09/getting-current-location-in-android-using-location-manager/
 
 public class TrackGPS extends Service implements LocationListener {
 
     private final Context mContext;
-
     boolean checkGPS = false;
-
     boolean checkNetwork = false;
-
     boolean canGetLocation = false;
 
     Location loc;
@@ -34,8 +31,8 @@ public class TrackGPS extends Service implements LocationListener {
     double altitude;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-
     private static final long MIN_TIME_BW_UPDATES = 1000 * 15 * 1;
+
     protected LocationManager locationManager;
 
     public TrackGPS(Context mContext) {
@@ -44,16 +41,15 @@ public class TrackGPS extends Service implements LocationListener {
     }
 
     private Location getLocation() {
-
         try {
             locationManager = (LocationManager) mContext
                     .getSystemService(LOCATION_SERVICE);
 
-            // getting GPS status
+            // GPS status
             checkGPS = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-            // getting network status
+            // network status
             checkNetwork = locationManager
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
@@ -61,7 +57,7 @@ public class TrackGPS extends Service implements LocationListener {
                 Toast.makeText(mContext, "No Service Provider Available", Toast.LENGTH_SHORT).show();
             } else {
                 this.canGetLocation = true;
-                // First get location from Network Provider
+                // get location from Network Provider
                 if (checkNetwork) {
                     Toast.makeText(mContext, "Network", Toast.LENGTH_SHORT).show();
 
@@ -80,6 +76,7 @@ public class TrackGPS extends Service implements LocationListener {
                         if (loc != null) {
                             latitude = loc.getLatitude();
                             longitude = loc.getLongitude();
+                            altitude = loc.getAltitude();
                         }
                     }
                     catch(SecurityException e){
@@ -103,6 +100,7 @@ public class TrackGPS extends Service implements LocationListener {
                             if (loc != null) {
                                 latitude = loc.getLatitude();
                                 longitude = loc.getLongitude();
+                                altitude = loc.getAltitude();
                             }
                         }
                     } catch (SecurityException e) {
@@ -146,11 +144,8 @@ public class TrackGPS extends Service implements LocationListener {
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-
         alertDialog.setTitle("GPS Not Enabled");
-
         alertDialog.setMessage("Do you wants to turn On GPS");
-
 
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -159,13 +154,11 @@ public class TrackGPS extends Service implements LocationListener {
             }
         });
 
-
         alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
-
 
         alertDialog.show();
     }

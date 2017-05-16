@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -28,6 +30,7 @@ import android.widget.ToggleButton;
 
 import com.example.alexander.hikebulgaria.MainActivity;
 import com.example.alexander.hikebulgaria.R;
+import com.example.alexander.hikebulgaria.SplashScreen;
 import com.example.alexander.hikebulgaria.TrackGPS;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -72,8 +75,8 @@ public class MapsActivity extends FragmentActivity
 
         TextView tvEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.textView);
         tvEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-    }
 
+    }
 
     /**
      * Manipulates the map once available.
@@ -122,7 +125,7 @@ public class MapsActivity extends FragmentActivity
 
     public void showSettingsDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Settings");
+        builder.setTitle(R.string.settings);
 
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.settings, null);
@@ -171,27 +174,36 @@ public class MapsActivity extends FragmentActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_altitude) {
-            Toast.makeText(this, "Current Longitude: " + longitude + "\n" +
-                    "Current Latitude: " + latitude + "\n" +
-                    "Current Altitude: " + altitude, Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_distance) {
-        } else if (id == R.id.nav_weather) {
-            openWebsite("https://www.sinoptik.bg/");
-        } else if (id == R.id.nav_transport) {
-            openWebsite("http://razpisanie.bdz.bg/site/search.jsp");
-        } else if (id == R.id.nav_calories) {
-        } else if (id == R.id.nav_music) {
+            getLocationInfo();
+            Toast.makeText(this, getString(R.string.cur_lon) + longitude + "\n" +
+                    getString(R.string.cur_lat) + latitude + "\n" +
+                    getString(R.string.cur_alt) + altitude, Toast.LENGTH_SHORT).show();
+        }
+        else if (id == R.id.nav_distance) {
+        }
+        else if (id == R.id.nav_weather) {
+            openWebsite(getString(R.string.weather_url));
+        }
+        else if (id == R.id.nav_transport) {
+            openWebsite(getString(R.string.transport_url));
+        }
+        else if (id == R.id.nav_calories) {
+        }
+        else if (id == R.id.nav_music) {
             if (Build.VERSION.SDK_INT >= ICE_CREAM_SANDWICH_MR1) {
                 Intent intent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN,
                         Intent.CATEGORY_APP_MUSIC);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Min SDK 15
                 startActivity(intent);
             }
-        } else if (id == R.id.nav_offline_maps) {
+        }
+        else if (id == R.id.nav_offline_maps) {
 
-        } else if (id == R.id.nav_settings) {
+        }
+        else if (id == R.id.nav_settings) {
             showSettingsDialog();
-        } else if (id == R.id.nav_logout) {
+        }
+        else if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
             finish();
         }

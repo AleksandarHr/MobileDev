@@ -2,6 +2,7 @@ package com.example.alexander.hikebulgaria;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -17,11 +18,14 @@ public class SplashScreen extends AppCompatActivity {
     private Animation animation;
     private ImageView imgView;
     private TextView tvTitle;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
+       // playSong(R.raw.eddie_vedder_longnights);
 
         animation = AnimationUtils.loadAnimation(SplashScreen.this,
                 R.anim.splash_anim);
@@ -39,7 +43,7 @@ public class SplashScreen extends AppCompatActivity {
         Thread timerThread = new Thread() {
             public void run() {
                 try {
-                    sleep(1000);
+                    sleep(7000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
@@ -49,6 +53,15 @@ public class SplashScreen extends AppCompatActivity {
             }
         };
         timerThread.start();
+    }
+
+    private void playSong (int songID) {
+        mediaPlayer = MediaPlayer.create(this, songID);
+        mediaPlayer.start();
+    }
+
+    public void stopSong () {
+        mediaPlayer.stop();
     }
 
     protected void playAnim() {
@@ -66,6 +79,5 @@ public class SplashScreen extends AppCompatActivity {
         super.onPause();
         finish();
     }
-
 
 }
