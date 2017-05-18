@@ -25,7 +25,7 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-       // playSong(R.raw.eddie_vedder_longnights);
+        //playSong(R.raw.eddie_vedder_longnights);
 
         animation = AnimationUtils.loadAnimation(SplashScreen.this,
                 R.anim.splash_anim);
@@ -43,7 +43,7 @@ public class SplashScreen extends AppCompatActivity {
         Thread timerThread = new Thread() {
             public void run() {
                 try {
-                    sleep(7000);
+                    sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
@@ -55,12 +55,12 @@ public class SplashScreen extends AppCompatActivity {
         timerThread.start();
     }
 
-    private void playSong (int songID) {
+    private void playSong(int songID) {
         mediaPlayer = MediaPlayer.create(this, songID);
         mediaPlayer.start();
     }
 
-    public void stopSong () {
+    public void stopSong() {
         mediaPlayer.stop();
     }
 

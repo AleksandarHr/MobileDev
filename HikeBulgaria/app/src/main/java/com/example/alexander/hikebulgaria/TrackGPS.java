@@ -53,6 +53,7 @@ public class TrackGPS extends Service implements LocationListener {
             checkNetwork = locationManager
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
+            /*
             if (!checkGPS && !checkNetwork) {
                 Toast.makeText(mContext, "No Service Provider Available", Toast.LENGTH_SHORT).show();
             } else {
@@ -78,15 +79,15 @@ public class TrackGPS extends Service implements LocationListener {
                             longitude = loc.getLongitude();
                             altitude = loc.getAltitude();
                         }
-                    }
-                    catch(SecurityException e){
+                    } catch (SecurityException e) {
 
                     }
                 }
-            }
+            }*/
             // if GPS Enabled get lat/long using GPS Services
             if (checkGPS) {
-                Toast.makeText(mContext,"GPS",Toast.LENGTH_SHORT).show();
+                this.canGetLocation = true;
+                Toast.makeText(mContext, "GPS", Toast.LENGTH_SHORT).show();
                 if (loc == null) {
                     try {
                         locationManager.requestLocationUpdates(
@@ -104,7 +105,6 @@ public class TrackGPS extends Service implements LocationListener {
                             }
                         }
                     } catch (SecurityException e) {
-
                     }
                 }
             }
@@ -112,7 +112,7 @@ public class TrackGPS extends Service implements LocationListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
         return loc;
     }
 
