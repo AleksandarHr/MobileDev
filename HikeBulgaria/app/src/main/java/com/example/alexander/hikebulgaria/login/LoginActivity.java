@@ -105,7 +105,7 @@ public class LoginActivity extends BaseActivity {
 
     @OnClick(R.id.btnOffline)
     public void offlineClick() {
-
+        startActivity(new Intent(LoginActivity.this, MapsActivity.class));
     }
 
     @OnClick(R.id.btnLogin)

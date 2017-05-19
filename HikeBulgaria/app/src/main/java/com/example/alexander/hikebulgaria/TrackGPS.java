@@ -53,37 +53,6 @@ public class TrackGPS extends Service implements LocationListener {
             checkNetwork = locationManager
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-            /*
-            if (!checkGPS && !checkNetwork) {
-                Toast.makeText(mContext, "No Service Provider Available", Toast.LENGTH_SHORT).show();
-            } else {
-                this.canGetLocation = true;
-                // get location from Network Provider
-                if (checkNetwork) {
-                    Toast.makeText(mContext, "Network", Toast.LENGTH_SHORT).show();
-
-                    try {
-                        locationManager.requestLocationUpdates(
-                                LocationManager.NETWORK_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("Network", "Network");
-                        if (locationManager != null) {
-                            loc = locationManager
-                                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-                        }
-
-                        if (loc != null) {
-                            latitude = loc.getLatitude();
-                            longitude = loc.getLongitude();
-                            altitude = loc.getAltitude();
-                        }
-                    } catch (SecurityException e) {
-
-                    }
-                }
-            }*/
             // if GPS Enabled get lat/long using GPS Services
             if (checkGPS) {
                 this.canGetLocation = true;
@@ -112,7 +81,7 @@ public class TrackGPS extends Service implements LocationListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return loc;
     }
 
