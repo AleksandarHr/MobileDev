@@ -8,4 +8,6 @@
     <string name="cur_lon">Current Longitude:</string>
     <string name="cur_lat">Current Latitude:</string>
     <string name="cur_alt">Current Altitude:</string>
+    <string name="default_latit">default_latit</string>
+    <string name="default_longit">default_longit</string>
 </resources>

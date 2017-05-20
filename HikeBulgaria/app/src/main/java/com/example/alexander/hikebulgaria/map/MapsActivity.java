@@ -1,17 +1,11 @@
 package com.example.alexander.hikebulgaria.map;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.AssetFileDescriptor;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
@@ -24,15 +18,17 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.alexander.hikebulgaria.MainActivity;
+import com.example.alexander.hikebulgaria.MyLocationService;
 import com.example.alexander.hikebulgaria.R;
+import com.example.alexander.hikebulgaria.RouteActivity;
 import com.example.alexander.hikebulgaria.SplashScreen;
 import com.example.alexander.hikebulgaria.TrackGPS;
+import com.example.alexander.hikebulgaria.login.LoginActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -65,10 +61,17 @@ public class MapsActivity extends FragmentActivity
 
     private GoogleMap mMap;
     private TrackGPS tracker;
-    double latitude, longitude, altitude;
+    private double latitude, longitude, altitude, latGPS, lonGPS;
+    public static final int REQUEST_CODE_EDIT = 101;
 
     private List<LatLng> path;
     private String pathString;
+    private boolean routeStarted = false;
+    private boolean routeEnded = true;
+    private Intent serviceIntent;
+
+    String longit = "";
+    String latit = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,8 @@ public class MapsActivity extends FragmentActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        path = new ArrayList<LatLng>();
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
@@ -87,7 +92,6 @@ public class MapsActivity extends FragmentActivity
 
         TextView tvEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.textView);
         tvEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
     }
 
     /**
@@ -115,7 +119,7 @@ public class MapsActivity extends FragmentActivity
 
     public void setUpMap(GoogleMap googleMap) {
         LatLng currLocation = new LatLng(latitude, longitude);
-        googleMap.addMarker(new MarkerOptions().position(currLocation).title("Marker in CurrLocation"));
+        googleMap.addMarker(new MarkerOptions().position(currLocation).title("Marker iLn Currocation"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(currLocation));
 
         googleMap.getUiSettings().setCompassEnabled(true);
@@ -124,13 +128,12 @@ public class MapsActivity extends FragmentActivity
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         addMarkers(googleMap);
-        pathString =  PolyUtil.encode(path);
-
+        pathString = PolyUtil.encode(path);
     }
+
 
     private void addMarkers(GoogleMap googleMap) {
         HashMap<LatLng, String> huts = new HashMap<>();
-        path = new ArrayList<LatLng>();
 
         LatLng gorskaHija = new LatLng(42.68829, 27.55074);
         LatLng turisticheskaSpalnqKozichina = new LatLng(42.838373, 27.573294);
@@ -149,11 +152,6 @@ public class MapsActivity extends FragmentActivity
         LatLng hijaGramadliva = new LatLng(42.792610, 25.658416);
         LatLng hijaSkiBazaGramadliva = new LatLng(42.79393, 25.65488);
 
-        path.add(gorskaHija);
-        path.add(turisticheskaSpalnqKozichina);
-        path.add(hijaTopchijsko);
-        path.add(hijaLudaKamchiq);
-
         huts.put(gorskaHija, "х. Горска Хижа, 200м"); //etc.
         huts.put(turisticheskaSpalnqKozichina, "Туристическа спалня, с.Козичина, 524м");
         huts.put(hijaTopchijsko, "х. Топчийско, 430м");
@@ -163,15 +161,15 @@ public class MapsActivity extends FragmentActivity
         huts.put(hijaChumerna, "х. Чумерна, 1446м.");
         huts.put(hijaBukovets, "х. Буковец, 1110м.");
         huts.put(hijaMoruley, "х. Морулей, 595м.");
-        huts.put(hijaBuzludzaStara ,"х. Бузлуджа(стара), 1280м.");
+        huts.put(hijaBuzludzaStara, "х. Бузлуджа(стара), 1280м.");
         huts.put(hijaBachoKiro, "х. Бачо Киро, 293м.");
         huts.put(gorskiDomBylgarka, "Горски дом Българка, 1135М.");
         huts.put(turisticheskaSpalnqKrystec, "Туристическа спалня гара Кръстец, 912м.");
         huts.put(hijaPredela, "х. Предела, 698м.");
-        huts.put(hijaGramadliva ,"х. Грамадлива, 876м.");
+        huts.put(hijaGramadliva, "х. Грамадлива, 876м.");
         huts.put(hijaSkiBazaGramadliva, "х. Ски база Грамадлива ,860м.");
 
-        for (LatLng coords: huts.keySet()) {
+        for (LatLng coords : huts.keySet()) {
             googleMap.addMarker(new MarkerOptions().position(coords).title(huts.get(coords)));
         }
     }
@@ -194,7 +192,7 @@ public class MapsActivity extends FragmentActivity
         });
     }
 
-    public void showSettingsDialog() {
+    private void showSettingsDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.settings);
 
@@ -238,22 +236,44 @@ public class MapsActivity extends FragmentActivity
         customTabsIntent.launchUrl(this, Uri.parse(urlAddr));
     }
 
+    private void drawRoute() {
+
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        String routeCoords = "";
 
-        if (id == R.id.nav_altitude) {
+        if (id == R.id.nav_new_route) {
+            //Intent startEdit = new Intent(MapsActivity.this, RouteActivity.class);
+            //startService(startEdit);
+            SharedPreferences prefs = getSharedPreferences("your_file_name",
+                    MODE_PRIVATE);
+            longit = prefs.getString("longitude", getString(R.string.default_longit));
+            latit = prefs.getString("latitude", getString(R.string.default_latit));
+
+            if (!longit.equals(R.string.default_longit) && !latit.equals(R.string.default_latit)) {
+                path.add(new LatLng(Double.parseDouble(latit), Double.parseDouble(longit)));
+            }
+
+        } else if (id == R.id.nav_altitude) {
             getLocationInfo();
             Toast.makeText(this, getString(R.string.cur_lon) + longitude + "\n" +
                     getString(R.string.cur_lat) + latitude + "\n" +
                     getString(R.string.cur_alt) + altitude, Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_distance) {
+            for (LatLng l : path) {
+                Toast.makeText(this, "LAT = " + l.latitude + ":: LON = " + l.longitude, Toast.LENGTH_LONG).show();
+            }
         } else if (id == R.id.nav_weather) {
             openWebsite(getString(R.string.weather_url));
         } else if (id == R.id.nav_transport) {
             openWebsite(getString(R.string.transport_url));
         } else if (id == R.id.nav_calories) {
+            serviceIntent = new Intent(MapsActivity.this, MyLocationService.class);
+            startService(serviceIntent);
         } else if (id == R.id.nav_music) {
             if (Build.VERSION.SDK_INT >= ICE_CREAM_SANDWICH_MR1) {
                 Intent intent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN,
@@ -279,5 +299,7 @@ public class MapsActivity extends FragmentActivity
     protected void onDestroy() {
         super.onDestroy();
         tracker.stopUsingGPS();
+        stopService(serviceIntent);
     }
+
 }
