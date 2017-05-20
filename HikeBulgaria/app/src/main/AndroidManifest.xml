@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <service android:enabled="true" android:name=".MyLocationService" />
+        <service android:name=".MyLocationService" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

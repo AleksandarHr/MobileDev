@@ -16,8 +16,9 @@ import android.widget.Toast;
 public class MyLocationService extends Service {
     private static final String TAG = "MyLocationService";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 200;
+    private static final int LOCATION_INTERVAL = 10 * 1000;
     private static final float LOCATION_DISTANCE = 0f;
+    public static final String NEW_MESSAGE = "New Message";
 Handler mHandler;
 
     private class LocationListener implements android.location.LocationListener {
@@ -40,6 +41,12 @@ Handler mHandler;
                 }
             });
             mLastLocation.set(location);
+            Intent i = new Intent(NEW_MESSAGE);
+            Bundle bundle = new Bundle();
+            bundle.putString("longitude", location.getLongitude() + "");
+            bundle.putString("latitude", location.getLatitude() + "");
+            i.putExtras(bundle);
+            sendBroadcast(i);
         }
 
         @Override

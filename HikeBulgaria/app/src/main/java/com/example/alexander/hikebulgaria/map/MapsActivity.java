@@ -1,11 +1,15 @@
 package com.example.alexander.hikebulgaria.map;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
@@ -83,6 +87,8 @@ public class MapsActivity extends FragmentActivity
         mapFragment.getMapAsync(this);
 
         path = new ArrayList<LatLng>();
+        serviceIntent = new Intent(MapsActivity.this, MyLocationService.class);
+
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
@@ -107,15 +113,9 @@ public class MapsActivity extends FragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         setUpMap(mMap);
-        drawPath(googleMap, pathString);
+        //drawPath(googleMap, pathString);
     }
 
-    private void drawPath(GoogleMap gm, String encodedPath) {
-        List<LatLng> pathToDraw = PolyUtil.decode(encodedPath);
-
-        Polyline line = gm.addPolyline(new PolylineOptions().width(3).color(Color.RED));
-        line.setPoints(pathToDraw);
-    }
 
     public void setUpMap(GoogleMap googleMap) {
         LatLng currLocation = new LatLng(latitude, longitude);
@@ -128,7 +128,6 @@ public class MapsActivity extends FragmentActivity
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         addMarkers(googleMap);
-        pathString = PolyUtil.encode(path);
     }
 
 
@@ -236,8 +235,24 @@ public class MapsActivity extends FragmentActivity
         customTabsIntent.launchUrl(this, Uri.parse(urlAddr));
     }
 
-    private void drawRoute() {
+    private void drawPath(GoogleMap gm, String encodedPath) {
+        List<LatLng> pathToDraw = PolyUtil.decode(encodedPath);
 
+        Polyline line = gm.addPolyline(new PolylineOptions().width(3).color(Color.RED));
+        line.setPoints(pathToDraw);
+    }
+
+
+    public class newMessage extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equalsIgnoreCase(MyLocationService.NEW_MESSAGE)) {
+                Bundle extra = intent.getExtras();
+                latit = extra.getString("longitude");
+                longit = extra.getString("latitude");
+            }
+        }
     }
 
     @Override
@@ -247,14 +262,11 @@ public class MapsActivity extends FragmentActivity
         String routeCoords = "";
 
         if (id == R.id.nav_new_route) {
-            //Intent startEdit = new Intent(MapsActivity.this, RouteActivity.class);
-            //startService(startEdit);
-            SharedPreferences prefs = getSharedPreferences("your_file_name",
-                    MODE_PRIVATE);
-            longit = prefs.getString("longitude", getString(R.string.default_longit));
-            latit = prefs.getString("latitude", getString(R.string.default_latit));
 
-            if (!longit.equals(R.string.default_longit) && !latit.equals(R.string.default_latit)) {
+            startService(serviceIntent);
+            newMessage messageReceiver = new newMessage();
+            registerReceiver(messageReceiver, new IntentFilter(MyLocationService.NEW_MESSAGE));
+            if (!longit.equals("") && !latit.equals("")) {
                 path.add(new LatLng(Double.parseDouble(latit), Double.parseDouble(longit)));
             }
 
@@ -264,16 +276,23 @@ public class MapsActivity extends FragmentActivity
                     getString(R.string.cur_lat) + latitude + "\n" +
                     getString(R.string.cur_alt) + altitude, Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_distance) {
-            for (LatLng l : path) {
-                Toast.makeText(this, "LAT = " + l.latitude + ":: LON = " + l.longitude, Toast.LENGTH_LONG).show();
+            if (path.size() == 0) {
+                Toast.makeText(this, "Empty Path", Toast.LENGTH_LONG).show();
+            } else {
+                for (LatLng l : path) {
+                    Toast.makeText(this, "LAT = " + l.latitude + ":: LON = " + l.longitude, Toast.LENGTH_LONG).show();
+                }
             }
         } else if (id == R.id.nav_weather) {
             openWebsite(getString(R.string.weather_url));
         } else if (id == R.id.nav_transport) {
             openWebsite(getString(R.string.transport_url));
         } else if (id == R.id.nav_calories) {
-            serviceIntent = new Intent(MapsActivity.this, MyLocationService.class);
-            startService(serviceIntent);
+
+            stopService(serviceIntent);
+            pathString = PolyUtil.encode(path);
+            drawPath(mMap, pathString);
+
         } else if (id == R.id.nav_music) {
             if (Build.VERSION.SDK_INT >= ICE_CREAM_SANDWICH_MR1) {
                 Intent intent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN,
