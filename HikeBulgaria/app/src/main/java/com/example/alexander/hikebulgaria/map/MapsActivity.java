@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
@@ -73,6 +74,11 @@ public class MapsActivity extends FragmentActivity
     private boolean routeStarted = false;
     private boolean routeEnded = true;
     private Intent serviceIntent;
+    private Polyline route = null;
+    private PolylineOptions routeOpts = null;
+
+    private Handler mHandler;
+
 
     String longit = "";
     String latit = "";
@@ -85,7 +91,7 @@ public class MapsActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        mHandler = new Handler();
         path = new ArrayList<LatLng>();
         serviceIntent = new Intent(MapsActivity.this, MyLocationService.class);
 
@@ -95,6 +101,8 @@ public class MapsActivity extends FragmentActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         getLocationInfo();
+
+        path.add(new LatLng(-19.00, 43.00));
 
         TextView tvEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.textView);
         tvEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
@@ -235,13 +243,6 @@ public class MapsActivity extends FragmentActivity
         customTabsIntent.launchUrl(this, Uri.parse(urlAddr));
     }
 
-    private void drawPath(GoogleMap gm, String encodedPath) {
-        List<LatLng> pathToDraw = PolyUtil.decode(encodedPath);
-
-        Polyline line = gm.addPolyline(new PolylineOptions().width(3).color(Color.RED));
-        line.setPoints(pathToDraw);
-    }
-
 
     public class newMessage extends BroadcastReceiver {
         @Override
@@ -251,25 +252,35 @@ public class MapsActivity extends FragmentActivity
                 Bundle extra = intent.getExtras();
                 latit = extra.getString("longitude");
                 longit = extra.getString("latitude");
+                LatLng newPoint = new LatLng(Double.parseDouble(latit), Double.parseDouble(longit));
+
+                path = route.getPoints();
+                path.add(newPoint);
+                route.setPoints(path);
+                path.add(new LatLng(-19.00, 42.00));
             }
         }
+    }
+
+    private void startNewRoute() {
+        routeOpts = new PolylineOptions().color(Color.BLUE)
+                .width(3)
+                .geodesic(true);
+        route = mMap.addPolyline(routeOpts);
+        route.setVisible(true);
+
+        startService(serviceIntent);
+        newMessage messageReceiver = new newMessage();
+        registerReceiver(messageReceiver, new IntentFilter(MyLocationService.NEW_MESSAGE));
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        String routeCoords = "";
 
         if (id == R.id.nav_new_route) {
-
-            startService(serviceIntent);
-            newMessage messageReceiver = new newMessage();
-            registerReceiver(messageReceiver, new IntentFilter(MyLocationService.NEW_MESSAGE));
-            if (!longit.equals("") && !latit.equals("")) {
-                path.add(new LatLng(Double.parseDouble(latit), Double.parseDouble(longit)));
-            }
-
+            startNewRoute();
         } else if (id == R.id.nav_altitude) {
             getLocationInfo();
             Toast.makeText(this, getString(R.string.cur_lon) + longitude + "\n" +
@@ -290,8 +301,12 @@ public class MapsActivity extends FragmentActivity
         } else if (id == R.id.nav_calories) {
 
             stopService(serviceIntent);
-            pathString = PolyUtil.encode(path);
-            drawPath(mMap, pathString);
+            //Polyline route = mMap.addPolyline(new PolylineOptions()
+            //        .width(10)
+            //        .color(Color.RED)
+            //        .geodesic(true)
+            //        .zIndex(0));
+            //route.setPoints(path);
 
         } else if (id == R.id.nav_music) {
             if (Build.VERSION.SDK_INT >= ICE_CREAM_SANDWICH_MR1) {

@@ -19,7 +19,7 @@ public class MyLocationService extends Service {
     private static final int LOCATION_INTERVAL = 10 * 1000;
     private static final float LOCATION_DISTANCE = 0f;
     public static final String NEW_MESSAGE = "New Message";
-Handler mHandler;
+    Handler mHandler;
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -85,7 +85,7 @@ Handler mHandler;
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override
