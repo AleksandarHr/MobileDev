@@ -116,10 +116,6 @@ public class MapsActivity extends FragmentActivity
         oldPoint = testPoint;
         path.add(oldPoint);
 
-
-        TextView tvEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.textView);
-        tvEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
         initMarkersListener();
         disableStopRoute();
     }
