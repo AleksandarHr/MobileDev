@@ -34,7 +34,7 @@ public class SplashScreen extends AppCompatActivity {
         tvTitle = (TextView) findViewById(R.id.tvTitle);
 
         Typeface custom_font = Typeface.createFromAsset(getAssets(),
-                "fonts/beyond_the_mountains.ttf");
+                "fonts/mountain_retreat.ttf");
 
         tvTitle.setTypeface(custom_font);
 

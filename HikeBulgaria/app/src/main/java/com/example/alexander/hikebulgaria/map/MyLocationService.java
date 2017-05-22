@@ -1,4 +1,4 @@
-package com.example.alexander.hikebulgaria;
+package com.example.alexander.hikebulgaria.map;
 
 import android.app.Service;
 import android.content.Context;
@@ -85,6 +85,12 @@ public class MyLocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MyLocationService.this, "LocationService started", Toast.LENGTH_SHORT).show();
+            }
+        });
         return START_NOT_STICKY;
     }
 

@@ -6,7 +6,11 @@
         <item
             android:id="@+id/nav_new_route"
             android:icon="@drawable/route"
-            android:title="New Route" />
+            android:title="Start New Route" />
+        <item
+            android:id="@+id/nav_end_route"
+            android:icon="@drawable/route"
+            android:title="End Route"/>
         <item
             android:id="@+id/nav_altitude"
             android:icon="@drawable/elevation"
@@ -32,9 +36,9 @@
             android:icon="@drawable/muisc"
             android:title="Music Player" />
         <item
-            android:id="@+id/nav_offline_maps"
+            android:id="@+id/nav_my_routes"
             android:icon="@drawable/offline_maps"
-            android:title="Offline Maps"/>
+            android:title="My Routes"/>
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/settings"
